@@ -1,6 +1,18 @@
+/*
+3 oscillators paraphohic systhesizer
+
+Notes:
+- Each oscillator has 34 different waverform to choose from: osc, triangle, square and sawtooth.
+- Oscillator 2 and 3 have have detune implemented which can be changed by +3Hz,-3Hz.
+- Oscillator 3 has got a switch which allows changing the octave of the oscillator up to 4 octaves.
+
+*/
+
+//filter taken from an example from https://faustdoc.grame.fr/examples/filtering/#korg35lpf
+declare author "Eric Tarr";  
 import ("stdfaust.lib");
 
-//////////OSCILLATORS
+//////////OSCILLATORS/////////////
 waveGenerator = hgroup("[0]Wave Generator",os.osc(freq), os.triangle(freq/2), os.square(freq/2),os.sawtooth(freq/2) : ba.selectn(4,wave))
 with{
     wave =nentry("[0]Waveform",2,0,3,1);
@@ -14,9 +26,9 @@ with{
     freq =hslider("freq",440,50,2000,0.01);
 };
 
-detuneOsc3 = hslider("detuneOsc3", 0,-3,3,0.01);
-harmonySelect =nentry("harmonyOsc3",1,1,3,1);
-waveGenerator3 = hgroup("[0]Wave Generator3",os.osc(freq*harmonySelect+detuneOsc3), os.triangle(freq*harmonySelect+detuneOsc3), os.square(freq*harmonySelect+detuneOsc3),os.sawtooth(freq*harmonySelect+detuneOsc3) : ba.selectn(4,wave))
+ddetuneOsc3 = hslider("detuneOsc3", 0,-3,3,0.01);
+octaveSwitch =nentry("octaveSwitch",1,1,4,1);
+waveGenerator3 = hgroup("[0]Wave Generator3",os.osc(freq*octaveSwitch+detuneOsc3), os.triangle(freq*octaveSwitch+detuneOsc3), os.square(freq*octaveSwitch+detuneOsc3),os.sawtooth(freq*octaveSwitch+detuneOsc3) : ba.selectn(4,wave))
 with{
     wave =nentry("Waveform3",3,0,3,1);
     freq =hslider("freq",440,50,2000,0.01);
@@ -44,5 +56,4 @@ normFreq = hslider("Cutoff",0.8,0,1,0.001):si.smoo;
 
 
 /////////////OUTPUT/////////////
-//process = 0.5*(waveGenerator3*envelope  + waveGenerator2*envelope + waveGenerator*envelope) : ve.korg35LPF(normFreq,Q) <:_,_;
 process = vgroup("Synth",(waveGenerator3*envelope  + waveGenerator2*envelope + waveGenerator*envelope) : ve.korg35LPF(normFreq,Q) <:_,_);
