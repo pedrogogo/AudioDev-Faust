@@ -1,5 +1,7 @@
+
+
 /*
-3 oscillators paraphonic synthesizer
+3 oscillators paraphohic systhesizer
 
 Notes:
 - Each oscillator has 34 different waverform to choose from: osc, triangle, square and sawtooth.
@@ -14,35 +16,35 @@ declare author "Eric Tarr";
 import ("stdfaust.lib");
 
 //////////OSCILLATORS/////////////
-waveGenerator = hgroup("[0]Wave Generator",os.osc(freq), os.triangle(freq/2), os.square(freq/2),os.sawtooth(freq/2) : ba.selectn(4,wave))
+osc1 = hgroup("[0]Osc1",os.osc(freq), os.triangle(freq/2), os.square(freq/2),os.sawtooth(freq/2) : ba.selectn(4,wave))
 with{
-    wave =nentry("[0]Waveform",2,0,3,1);
+    wave =nentry("[0]oscType",2,0,3,1);
     freq =hslider("[0]freq",440,50,2000,0.01);
 };
 
 detuneOsc2 = hslider("detuneOsc2", 0,-3,3,0.01);
-waveGenerator2 = hgroup("[0]Wave Generator2",os.osc(freq+detuneOsc2), os.triangle(freq+detuneOsc2), os.square(freq+detuneOsc2),os.sawtooth(freq+detuneOsc2) : ba.selectn(4,wave))
+osc2 = hgroup("[0]osc2",os.osc(freq+detuneOsc2), os.triangle(freq+detuneOsc2), os.square(freq+detuneOsc2),os.sawtooth(freq+detuneOsc2) : ba.selectn(4,wave))
 with{
-    wave =nentry("Waveform2",3,0,3,1);
+    wave =nentry("oscType",3,0,3,1);
     freq =hslider("freq",440,50,2000,0.01);
 };
 
 detuneOsc3 = hslider("detuneOsc3", 0,-3,3,0.01);
-octaveFifth =nentry("octaveSwitch",1,1,4,0.5);
-waveGenerator3 = hgroup("[0]Wave Generator3",os.osc(freq*octaveFifth+detuneOsc3), os.triangle(freq*octaveFifth+detuneOsc3), os.square(freq*octaveFifth+detuneOsc3),os.sawtooth(freq*octaveFifth+detuneOsc3) : ba.selectn(4,wave))
+octaveFifth =nentry("octaveFifth",1,1,4,0.5);
+osc3 = hgroup("[0]osc3",os.osc(freq*octaveFifth+detuneOsc3), os.triangle(freq*octaveFifth+detuneOsc3), os.square(freq*octaveFifth+detuneOsc3),os.sawtooth(freq*octaveFifth+detuneOsc3) : ba.selectn(4,wave))
 with{
-    wave =nentry("Waveform3",3,0,3,1);
+    wave =nentry("oscType",3,0,3,1);
     freq =hslider("freq",440,50,2000,0.01);
 };
 
 
 /////////////ENVELOPE/////////////
-envelope = hgroup("[1]Envelope",en.adsr(attack,decay,sustain,release,gate)*gain*0.3)
+envelope = hgroup("[1]Envelope",en.adsr(attack,decay,sustain,release,gate)*gain*0.2)
 with{
     attack  = hslider("[0]Attack[style:knob]", 50,1,1000,1)*0.001;
     decay   = hslider("[1]Decay[style:knob]", 50,1,1000,1)*0.001;
     sustain = hslider("[2]Sustain[style:knob]", 1,0.01,1,0.01);
-    release = hslider("[3]Release[style:knob]",50,1,1000,1)*0.001;
+    release = hslider("[3]Release[style:knob]",50,1,5000,1)*0.001;
     gain    = hslider("[4]gain[style:knob]",0.5,0,1,0.01);
     gate    = button("[5]gate");
 
@@ -57,4 +59,5 @@ normFreq = hslider("Cutoff",0.8,0,1,0.001):si.smoo;
 
 
 /////////////OUTPUT/////////////
-process = vgroup("Synth",(waveGenerator3*envelope  + waveGenerator2*envelope + waveGenerator*envelope) : ve.korg35LPF(normFreq,Q) <:_,_);
+process = vgroup("Synth",(osc3*envelope  + osc2*envelope + osc1*envelope) : ve.korg35LPF(normFreq,Q) <:_,_);
+
