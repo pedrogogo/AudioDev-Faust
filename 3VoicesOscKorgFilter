@@ -4,7 +4,7 @@
 3 oscillators paraphonic synthesizer
 
 Notes:
-- Each oscillator has 3 different waverforms to choose from: osc, triangle, square and sawtooth.
+- Each oscillator has 4 different waveforms to choose from: osc (ie.sine), triangle, square and sawtooth.
 - Oscillator 2 and 3 have have a detune implemented which can be changed by +3Hz,-3Hz.
 - Oscillator 3 has got a switch which allows changing the oscillator base frequency by an octave and a fifth up. Could be improved further to add more range.
 
